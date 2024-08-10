@@ -3,9 +3,10 @@ parameter START = 3'h1;
 parameter BUSY  = 3'h2;
 parameter STOP  = 3'h3;
 parameter RATE = 115200;
-parameter FREQ = 125000000;
-parameter N_CYC = FREQ/RATE;//1086;//FREQ/RATE;
+parameter FREQ = 125000000;//Zybo-Z7 system clock frequency 
+parameter N_CYC = FREQ/RATE;
 parameter D_WIDTH = 8;
+parameter CNT_WIDTH = 11; //16; Should be large enough that r_cnt is larger than N_CYC
 
 module uart_top (
     input wire clk,
@@ -27,13 +28,13 @@ module uart_top (
 wire [D_WIDTH-1:0]rx_din_data;
 wire [D_WIDTH-1:0]tx_dout_data;
 
-reg [1:0]r_state = 0;
-reg [10:0]r_cnt = 0;
-reg [3:0]r_bit_cnt = 0;
+//reg [1:0]r_state = 0;
+//reg [CNT_WIDTH-1:0]r_cnt = 0;
+//reg [3:0]r_bit_cnt = 0;
 
 wire rx_busy;
 wire [1:0]rx_state;
-wire [10:0]rx_cnt;
+//wire [CNT_WIDTH-1:0]rx_cnt;
 
 wire tx_en;
 
@@ -87,7 +88,7 @@ module uart_tx (
 
 
 reg [1:0]r_state = IDLE;
-reg [10:0]r_cnt = 0;
+reg [CNT_WIDTH-1:0]r_cnt = 0;
 reg [3:0]r_bit_cnt = 0;
 
 reg r_send_dout = 1;
@@ -153,13 +154,13 @@ module uart_rx (
     output reg[D_WIDTH-1:0] rec_dout,
     output wire busy,
     output wire [1:0] state_o,
-    output wire [10:0]cnt_o
+    output wire [CNT_WIDTH-1:0]cnt_o
 );
 
 reg [1:0]r_din;
 
 reg [1:0]r_state = IDLE;
-reg [10:0]r_cnt = 0;
+reg [CNT_WIDTH-1:0]r_cnt = 0;
 reg [3:0]r_bit_cnt = 0;
 
 assign state_o = r_state;
